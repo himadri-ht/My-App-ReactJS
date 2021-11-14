@@ -1,36 +1,45 @@
 import React from 'react';
+//import {useState } from "react";
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+// import data from './FetchData';
+//import {useEffect} from "react";
+import data from './Data.json';
 
-function SearchBar({placeholder, data}){
-    const [filteredData, setFilteredData] = useState([]);
-    
-    const handleFilter = (event) => {
-        const searchWord = event.target.value;
-        const newFilter = data.filter((value) => {
-            return value.title.toLowerCase().includes(searchWord.toLowerCase());
-        });
+function SearchBar() {
+  //const [data, setData] = useState([]);
 
-        if (searchWord === ""){
-            setFilteredData([]);
-        }else{
-            setFilteredData(newFilter);    
-        }
-    };
+  // useEffect(() => {
+  //   data();
+  //   }, []);
+
+  // useEffect(() => {
+  //   fetch("https://damp-garden-93707.herokuapp.com/getlistofagents"})
+  //       .then((response) => {response.json()})
+  //         .then((data) => {
+  //             setData(data.data.listofagents);
+  //         })
+  // }, [])
     return (
-        <div className="search">
-            <div className="searchInputs">
-                <input type="text" placeholder={placeholder} onChange={handleFilter}/>
-                <div className="searchIcon"></div>
-            </div>
-            {filteredData.length != 0 && (
-            <div className="dataResult">
-                {
-                    filteredData.map((value) => {
-                        return (
-                        <div>{value}</div>
-                        );
-                    })}
-        </div>
-            )}
-)}
+      <Stack spacing={3} sx={{ width: 500 }}>
+          <Autocomplete
+        multiple
+        id="tags-outlined"
+        options={data}
+        getOptionLabel={(option) => option}
+        defaultValue={[]}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="filterSelectedOptions"
+            placeholder="Favorites"
+          />
+        )}
+      />
+      </Stack>
+  );
+}
 
-export default SearchBar
+export default SearchBar;
