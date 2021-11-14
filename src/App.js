@@ -2,10 +2,20 @@ import "./App.css";
 //import DataFetching from './DataFetching';
 //import SearchBar from "./Components/SeachBar";
 //import JsonData from "./Data.json";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import reactDom from "react-dom";
+import { render } from "react-dom";
 import SearchBar from "./Components/SeachBar";
 import CallDuration from "./Components/CallDuration";
 import AgentTable from "./Components/AgentTable";
+import Fiftycall from "./Components/fiftycall";
 
 function App() {
   const [data, setData] = useState([]);
@@ -55,23 +65,32 @@ function App() {
 
   return (
     <div className="App">
-      <SearchBar
-        selectedAgents={data}
-        selAgents={selAgents}
-        setSelAgents={setSelAgents}
-      />
-      <CallDuration
-        selectedAgents={data}
-        selAgents={selAgents}
-        setSelAgents={setSelAgents}
-        entermin={entermin}
-        entermax={entermax}
-        setEntermin={setEntermin}
-        setEntermax={setEntermax}
-      />
-      <AgentTable selAgents={filAgents} />
+      <Router>
+        <Routes>
+          <Route exact path="/fifty" element={<Fiftycall />} />
+          <Route exact path="/" element={<App />} />
+        </Routes>
+
+        {/* <SearchBar
+          selectedAgents={data}
+          selAgents={selAgents}
+          setSelAgents={setSelAgents}
+        />
+        <CallDuration
+          selectedAgents={data}
+          selAgents={selAgents}
+          setSelAgents={setSelAgents}
+          entermin={entermin}
+          entermax={entermax}
+          setEntermin={setEntermin}
+          setEntermax={setEntermax}
+        />
+        <AgentTable selAgents={filAgents} /> */}
+      </Router>
     </div>
   );
 }
+
+// reactDom.render(<App />);
 
 export default App;
