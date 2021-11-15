@@ -1,92 +1,88 @@
+//importing modules and paths
+
 import "./App.css";
-//import DataFetching from './DataFetching';
-//import SearchBar from "./Components/SeachBar";
-//import JsonData from "./Data.json";
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import reactDom from "react-dom";
-// import { render } from "react-dom";
 import SearchBar from "./Components/SeachBar";
 import CallDuration from "./Components/CallDuration";
 import AgentTable from "./Components/AgentTable";
-import Fiftycall from "./Components/fiftycall";
-import Agent from "./Components/agent";
 
 function App() {
-  // const [data, setData] = useState([]);
-  // const [selAgents, setSelAgents] = useState([]);
-  // const [entermin, setEntermin] = useState("0");
-  // const [entermax, setEntermax] = useState("0");
-  // const [filAgents, setFilAgents] = useState([]);
+  //declaring states
 
-  // // useEffect(() => {
-  // //   data();
-  // //   }, []);
+  const [data, setData] = useState([]);
+  const [selAgents, setSelAgents] = useState([]);
+  const [minTime, setMinTime] = useState("");
+  const [maxTime, setMaxTime] = useState("");
+  const [entermin, setEntermin] = useState("0");
+  const [entermax, setEntermax] = useState("0");
+  const [filAgents, setFilAgents] = useState([]);
 
-  // useEffect(() => {
-  //   fetch("https://damp-garden-93707.herokuapp.com/getlistofagents")
-  //     .then((response) => {
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       // console.log(data.data.listofagents);
-  //       setData(data.data.listofagents);
-  //     });
-  // }, []);
+  //using useEffect hooks to fetch data from API
 
-  // useEffect(() => {
-  //   console.log(selAgents);
+  useEffect(() => {
+    fetch("https://damp-garden-93707.herokuapp.com/getlistofagents") //to fetch list of agents
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setData(data.data.listofagents);
+      });
+  }, []);
 
-  //   fetch("https://damp-garden-93707.herokuapp.com/getfilteredcalls", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       info: {
-  //         filter_agent_list: selAgents,
-  //         filter_time_range: [parseFloat(entermin), parseFloat(entermax)],
-  //       },
-  //     }),
-  //   })
-  //     .then((response) => {
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       console.log("hi", data);
-  //       setFilAgents(data.data);
-  //     });
-  // }, [selAgents, entermin, entermax]);
+  useEffect(() => {
+    fetch("https://damp-garden-93707.herokuapp.com/getdurationrange") //to get duration range
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setMinTime(data.data.minimum);
+        setMaxTime(data.data.maximum);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("https://damp-garden-93707.herokuapp.com/getfilteredcalls", {
+      //to get agent list after filteration
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        info: {
+          filter_agent_list: selAgents,
+          filter_time_range: [parseFloat(entermin), parseFloat(entermax)],
+        },
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setFilAgents(data.data);
+      });
+  }, [selAgents, entermin, entermax]);
 
   return (
     <div className="App">
-      <Router>
-        <Switch>
-          <Route exact path="/agent" component={Agent} />
-          <Route exact path="/fifty" component={Fiftycall} />
-          <Route exact path="/" component={App} />
-        </Switch>
-
-        {/* <SearchBar
-          selectedAgents={data}
-          selAgents={selAgents}
-          setSelAgents={setSelAgents}
-        />
-        <CallDuration
-          selectedAgents={data}
-          selAgents={selAgents}
-          setSelAgents={setSelAgents}
-          entermin={entermin}
-          entermax={entermax}
-          setEntermin={setEntermin}
-          setEntermax={setEntermax}
-        />
-        <AgentTable selAgents={filAgents} /> */}
-      </Router>
+      <SearchBar
+        selectedAgents={data}
+        selAgents={selAgents}
+        setSelAgents={setSelAgents}
+      />
+      <CallDuration
+        selectedAgents={data}
+        selAgents={selAgents}
+        setSelAgents={setSelAgents}
+        entermin={entermin}
+        entermax={entermax}
+        setEntermin={setEntermin}
+        setEntermax={setEntermax}
+        minTime={minTime}
+        maxTime={maxTime}
+      />
+      <AgentTable selAgents={filAgents} />
     </div>
   );
 }
-
-// reactDom.render(<App />);
 
 export default App;
